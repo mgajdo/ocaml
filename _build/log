@@ -1,0 +1,27 @@
+# dune build @doc
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Shared cache location: /Users/martingajdos/.cache/dune/db
+# Workspace root: /Users/martingajdos/Desktop/programming/ocaml/hello
+# Auto-detected concurrency: 8
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; installed_env =
+#      map
+#        { "INSIDE_DUNE" :
+#            "/Users/martingajdos/Desktop/programming/ocaml/hello/_build/default"
+#        ; "OCAML_COLOR" : "always"
+#        ; "OPAMCOLOR" : "always"
+#        }
+#  ; instrument_with = []
+#  }
+$ /Users/martingajdos/Desktop/programming/ocaml/hello/_opam/bin/ocamlc.opt -config > /var/folders/yp/h_z2jglj3mvcp64h8kh0lbxh0000gn/T/dune_e7c060_output
+$ (cd _build/default/_doc/_odoc/pkg/hello && /Users/martingajdos/Desktop/programming/ocaml/hello/_opam/bin/odoc compile --pkg hello -o page-index.odoc ../../../_mlds/hello/index.mld)
+$ (cd _build/default && /Users/martingajdos/Desktop/programming/ocaml/hello/_opam/bin/odoc support-files -o _doc/_html/odoc.support)
+$ (cd _build/default/_doc/_html && /Users/martingajdos/Desktop/programming/ocaml/hello/_opam/bin/odoc link -I ../_odoc/pkg/hello -o ../_odocls/hello/page-index.odocl ../_odoc/pkg/hello/page-index.odoc)
+$ (cd _build/default/_doc/_html && /Users/martingajdos/Desktop/programming/ocaml/hello/_opam/bin/odoc html-generate -o . --support-uri odoc.support --theme-uri odoc.support ../_odocls/hello/page-index.odocl)
