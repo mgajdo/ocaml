@@ -22,7 +22,7 @@ Initialize the opam package database by running:
 ```
 $ opam init
 ```
-opam init will ask you if you want it to adjust some of the config files for your shell. We recommend you say yes here so as to automate adjusting the PATH environment variable of your shell and to prepare your environment in other ways. Note that this will only take effect on a newly launched shell.
+'opam init' will ask you if you want it to adjust some of the config files for your shell. We recommend you say yes here so as to automate adjusting the PATH environment variable of your shell and to prepare your environment in other ways. Note that this will only take effect on a newly launched shell.
 
 You can check if your environment is set up properly by running
 ```
@@ -36,66 +36,68 @@ $ eval $(opam env)
 The opam switch create will take a few minutes on a modern machine, and will download and install the new compiler and all libraries associated with it. The second line is required to point your current shell to the new switch.
 
 You'll need to install base and core, which provide the standard library that all the examples in the book are based on, along with utop, which is the interactive toplevel that you can use for working through the examples.
-
+```
 $ opam install core core_bench utop
-
-create an ~/.ocamlinit file in your home directory with the following contents:
-
+```
+Then, create an `~/.ocamlinit` file in your home directory with the following contents:
+```
 #require "core.top";;
 #require "ppx_jane";;
 open Base;;
-
+```
 Set up your Visual Studio Code with the OCaml Platform plug-in. You'll also need an OCaml Language-Server-Protocol server, which you can install via opam following these instructions [https://github.com/ocaml/ocaml-lsp#installation].
 
 ## Part I - Language Concepts (core language, modules, functors and objects)
 
 ### Chapter 4 - Files, Modules and Programs
 
-For real-world programs, you’ll need to leave the toplevel behind and start building programs from files. Files are more than just a convenient way to store and manage your code; in OCaml, they also correspond to modules, which act as boundaries that divide your program into conceptual units. Mostly, the declaration starting with let () = plays the role of the main function, kicking off the processing.
+For real-world programs, you’ll need to leave the toplevel behind and start building programs from files. Files are more than just a convenient way to store and manage your code; in OCaml, they also correspond to modules, which act as boundaries that divide your program into conceptual units. Mostly, the declaration starting with `let () =` plays the role of the **main** function, kicking off the processing.
 
 #### Single-file programs
 
 Unlike programs in C, Java or C#, programs in OCaml don’t have a unique main function. When an OCaml program is evaluated, all the statements in the implementation files are evaluated in the order in which they were linked together.
 
 For a filename.ml program, if we weren’t using Base or any other external libraries, we could build the executable like this:
-
+```
 $ ocamlopt filename.ml -o filename
-
+```
 However, because we are using Base and Stdio, we need a somewhat more complex invocation to get them linked in:
-
+```
 $ ocamlfind ocamlopt -linkpkg -package base -package stdio filename.ml -o filename
-
-This uses ocamlfind, a tool which itself invokes other parts of the OCaml toolchain (in this case, ocamlopt) with the appropriate flags to link in particular libraries and packages. Here, -package base is asking ocamlfind to link in the Base library; -linkpkg asks ocamlfind to link in the packages as is necessary for building an executable. (the above command creates filename filename.cmi filename.cmx and freq.o.)
+```
+This uses **ocamlfind**, a tool which itself invokes other parts of the OCaml toolchain (in this case, **ocamlopt**) with the appropriate flags to link in particular libraries and packages. Here, -package base is asking ocamlfind to link in the Base library; -linkpkg asks ocamlfind to link in the packages as is necessary for building an executable. (the above command creates `filename`, `filename.cmi`. `filename.cmx` and `filename.o`.)
 
 #### Dune Files
 
-While this works well enough for a one-file project, more complicated projects require a tool to orchestrate the build. One good tool for this task is dune. To invoke dune, you need to have two files: a dune-project file for the overall project, and a dune file that configures the particular directory. This is a single-directory project, so we’ll just have one of each, but more realistic projects will have one dune-project and many dune files.
+While this works well enough for a one-file project, more complicated projects require a tool to orchestrate the build. One good tool for this task is `dune`. To invoke dune, you need to have two files: a `dune-project` file for the overall project, and a `dune` file that configures the particular directory. This is a single-directory project, so we’ll just have one of each, but more realistic projects will have one dune-project and many dune files.
 
-At its simplest, the dune-project just specifies the version of the dune configuration-language in use:
-
+At its simplest, the `dune-project` just specifies the version of the dune configuration-language in use:
+```
 (lang dune 3.0)
-
-We also need a dune file to declare the executable we want to build, along with the libraries it depends on:
-
+```
+We also need a `dune` file to declare the executable we want to build, along with the libraries it depends on:
+```
 (executable
   (name      filename)
   (libraries base stdio))
-
+```
 With that in place, we can invoke dune as follows:
-
+```
 $ dune build filename.exe
+```
+Executables built with dune will be left in the `_build/default` directory, from which they can be invoked. 
 
-Executables built with dune will be left in the _build/default directory, from which they can be invoked. 
+We can run the resulting executable, filename.exe, from the command line. (Note: grep is short for "global regular expression print" - a useful command to search for matching patterns in a file.[^4]):
 
-We can run the resulting executable, freq.exe, from the command line. Note: grep is short for "global regular expression print" - a useful command to search for matching patterns in a file. (Pattern: grep [OPTION...] PATTERNS [FILE...].):
+[^4]: More info on grep: [https://www.freecodecamp.org/news/grep-command-in-linux-usage-options-and-syntax-examples/]
 
-$ grep -Eo '[[:alpha:]]+' filename.ml | ./_build/default/freq.exe
-
+```
+$ grep -Eo '[[:alpha:]]+' filename.ml | ./_build/default/filename.exe
+```
 The specific invocation above will count the words that come up in the file freq.ml itself. Conveniently, dune allows us to combine the building and running an executable into a single operation, which we can do using dune exec:
-
-$ grep -Eo '[[:alpha:]]+' freq.ml | dune exec ./freq.exe
-
-More info on grep: [https://www.freecodecamp.org/news/grep-command-in-linux-usage-options-and-syntax-examples/]
+```
+$ grep -Eo '[[:alpha:]]+' filename.ml | dune exec ./filename.exe
+```
 
 #### Multiple files and modules
 
@@ -104,9 +106,9 @@ Source files in OCaml are tied into the module system, with each file compiling 
 For example  we can factor out the key functionality of freq.ml into a separate module with an explicit interface. We’ll start by creating a file, counter.ml, that contains the logic for maintaining the association list used to represent the frequency counts. The file counter.ml will be compiled into a module named Counter, where the name of the module is derived automatically from the filename. The module name is capitalized even if the file is not.
 
 We can now rewrite freq.ml to use Counter. The resulting code can still be built with dune, which will discover dependencies and realize that counter.ml needs to be compiled:
-
+```
 $ dune build freq.exe
-
+```
 ## Part II - useful tools and techniques for addressing common practical applications, from command-line parsing to asynchronous network programming
 
 ### Chapter 21 - The OCaml Platform
@@ -118,43 +120,41 @@ The OCaml community has developed a suite of modern tools to interface it with I
 https://opam.ocaml.org/doc/Usage.html
 
 First, initialize opam’s global state. An existing opam root is required for opam to operate normally, and one is created upon running opam init.
-
+```
 $ opam init
-
+```
 By default, opam doesn’t require any special user permissions and stores all of the files it installs in ~/.opam. opam holds its configuration, metadata, logs, temporary directories and caches within a directory. By default, this is ~/.opam.
 
-
 You can maintain multiple development environments with different packages and compilers installed, each of which is called a “switch” – the default one can be found under ~/.opam/default.  Run opam switch to see all the different sandboxed environments you have available:
-
+```
 $ opam switch
-
-
+```
 opam is designed to hold any number of concurrent installation prefixes, called switches. Switches are isolated from each other and have their own set of installed packages. Command opam env returns the environment updates corresponding to the current switch:
-
+```
 $ eval $(opam env)
-
+```
 #### a sample OCaml project
 
 Dune has a basic built-in command to initialize a project template. Dune will create a hello/ directory and populate it with a skeleton OCaml project. (Make sure the directory does not contain any space characters.)
-
+```
 $ dune init proj hello
-
+```
 The next thing we need is a suitable environment for this project, with dune and any other library dependencies available. The best way to do this is to create a new opam sandbox, via the opam switch create command. If you specify a project directory argument to this command, then it creates a “local switch” that stores all the dependencies within that directory rather than under ~/.opam. This is a convenient way to keep all your build dependencies and source code in one place on your filesystem. Let’s make a local switch for our hello world project now:  
-
+```
 $ cd hello
 $ opam switch create .
 $ opam install dune
-
+```
 This invokes opam to install the project dependencies (in this case, just the OCaml compiler and dune as we didn’t specify any more when initializing the project - The default operation of opam switch create is to calculate the latest supported compiler version from your project metadata and use that one for the local switch.). All of the files from the local switch will be present under _opam/ in the working directory. Since opam will install other binaries and libraries in the local switch as your project grows, you will need to add the switch to your command-line path. (opam install dune will install the dune package.)
 
 You can use opam env to add the right directories to your local shell path so that you can invoke the locally installed tools:
-
+```
 $ eval $(opam env)
-
+```
 If you prefer not to modify your shell configuration, then you can also invoke commands via opam exec to modify the path for the subcommand specified in the remainder of the command line:
-
+```
 $ opam exec -- dune build
-
+```
 This executes dune build with the opam environment variables added to the command invocation, so it will pick up the locally built dune from your project. The double dash in the command line is a common Unix convention that tells opam to stop parsing its own optional arguments for the remainder of the command, so that they don’t interfere with the command that is being executed.
 
 When creating a switch, opam analyses the project dependencies and selects the newest OCaml compiler that is compatible with them. Sometimes though, you will want to select a specific version of the OCaml compiler, perhaps to ensure reproducibility or to use a particular feature. To get a full list of all the compilers that are available you can use:
