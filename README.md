@@ -1,5 +1,8 @@
-# Real World OCaml - FUNCTIONAL PROGRAMMING FOR THE MASSES - 2nd Edition (Oct 2022)
-[https://dev.realworldocaml.org/files-modules-and-programs.html]
+# OCaml and Catala installation
+[Real World OCaml 2nd Ed.](https://dev.realworldocaml.org/files-modules-and-programs.html)[^1].
+
+[^1]: Real World OCaml - FUNCTIONAL PROGRAMMING FOR THE MASSES - 2nd Edition (Oct 2022)
+
 
 ## Prologue
 
@@ -17,8 +20,7 @@ The installation and management of these third-party libraries is made much easi
 
 ### Installation
 
-pardpardeftab720partightenfactor0
-cf0 4.13.1 version of the compiler [http://dev.realworldocaml.org/install.html]
+[http://dev.realworldocaml.org/install.html]
 
 Initialize the opam package database by running:
 
@@ -111,15 +113,24 @@ $ dune build freq.exe
 The OCaml community has developed a suite of modern tools to interface it with IDEs such as Visual Studio Code, and to generate API documentation and implement modern software engineering practices such as continuous integration (CI) and unit or fuzz testing. All you need to do is to specify your project metadata (for example, library dependencies and compiler versions), and the OCaml Platform tools that we’ll describe next will do much of the heavy lifting.
 
 #### How to use opam within a full project
-First, initialize opam’s global state. 
+https://opam.ocaml.org/doc/Usage.html
+
+First, initialize opam’s global state. An existing opam root is required for opam to operate normally, and one is created upon running opam init.
 
 $ opam init
 
-By default, opam doesn’t require any special user permissions and stores all of the files it installs in ~/.opam, such as the current build of the OCaml compiler if you didn’t have one pre-installed when you initialized opam.
+By default, opam doesn’t require any special user permissions and stores all of the files it installs in ~/.opam. opam holds its configuration, metadata, logs, temporary directories and caches within a directory. By default, this is ~/.opam.
+
 
 You can maintain multiple development environments with different packages and compilers installed, each of which is called a “switch” – the default one can be found under ~/.opam/default.  Run opam switch to see all the different sandboxed environments you have available:
 
 $ opam switch
+
+
+opam is designed to hold any number of concurrent installation prefixes, called switches. Switches are isolated from each other and have their own set of installed packages. Command opam env returns the environment updates corresponding to the current switch:
+
+$ eval $(opam env)
+
 
 #### a sample OCaml project
 Dune has a basic built-in command to initialize a project template. Dune will create a hello/ directory and populate it with a skeleton OCaml project. (Make sure the directory does not contain any space characters.)
@@ -157,6 +168,8 @@ $ opam switch create . 4.13.1
 On the other hand, if you didn’t have that system compiler installed, then the compiler will need to be built from scratch. The command above would select the ocaml-base-compiler package in this case, which contains the full OCaml compiler source code. It will take a little longer than ocaml-system, but you have much more flexibility about the choice of versions.
 
 #### Structure of an OCaml Project
+```
+
 .
 |-- dune-project
 |-- hello.opam
@@ -168,6 +181,8 @@ On the other hand, if you didn’t have that system compiler installed, then the
 `-- test
     |-- dune
     `-- hello.ml
+```
+
 
 Apart from _opam and _build directory we have the above folder structure in  our hello project:
 - The dune-project file marks the root of the project, and is used for writing down some key metadata for the project (more on that later).
@@ -590,3 +605,25 @@ This declares the hello_world executable implemented by hello_world.ml to be bui
 $ dune build hello_world.bc
 
 The executable will be built as _build/default/hello_world.bc. The executable can be built and run in a single step with dune exec ./hello_world.bc-
+
+
+## Catala
+Catala is a domain-specific language for deriving faithful-by-construction algorithms from legislative texts. 
+Catala is available as an opam package. 
+
+https://github.com/CatalaLang/catala#building-and-installation
+
+On Unix, it's essential to initialise opam becuase OPAM uses ~/.opam by default for its package database. This is why we need to initialise it first, which will (if needed) install the OCaml compiler.
+
+$ opam init
+$ eval $(opam env)
+
+Now check the installation by running opam --version.
+
+$ opam --version
+
+Install user-setup (development tools):
+
+$ opam user-setup install
+
+$ opam install catala
