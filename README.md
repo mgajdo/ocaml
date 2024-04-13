@@ -1,36 +1,32 @@
-# OCaml and Catala installation
+# OCaml & Catala installation
+
 [Real World OCaml 2nd Ed.](https://dev.realworldocaml.org/files-modules-and-programs.html)[^1].
 
 [^1]: Real World OCaml - FUNCTIONAL PROGRAMMING FOR THE MASSES - 2nd Edition (Oct 2022)
 
+## Intro[^2]
 
-## Prologue
+[^2]: Real World OCaml - FUNCTIONAL PROGRAMMING FOR THE MASSES - 2nd Edition (Oct 2022) - Prologue
 
-### Standard library (base, core, async)
+### Standard library and OCaml Platform (opam, base, core, async, dune, lnaguage server protocol and utop)
 
-The role of the standard library is bootstrapping the compiler. Apart from that it covers only a subset of the functionality you would expect from a general-purpose standard library. The Base library supplements this. It is distributed with a set of syntax extensions that provide useful new functionality to OCaml, and there are additional libraries that are designed to work well with it, including Core, an extension to Base that includes a wealth of new data structures and tools; and Async, a library for concurrent programming of the kind that often comes up when building user interfaces or networked applications.
+- The role of the standard library is bootstrapping the compiler. Apart from that it covers only a subset of the functionality you would expect from a general-purpose standard library. 
+- **opam** is a package management tool that makes the installation and management of  third-party libraries such as base, core, async etc. much easier and is the basis of the OCaml Platform. 
+- The **Base** library supplements the standard library and is distributed with a set of syntax extensions that provide useful new functionality to OCaml. Base is designed to be lightweight, portable, and stable, while providing all of the fundamentals you need from a standard library. There are additional libraries that are designed to work well with it, including **Core**, an extension to Base that includes a wealth of new data structures and tools; and **Async**, a library for concurrent programming of the kind that often comes up when building user interfaces or networked applications.
+- Constituent tools of the OCaml Platform further include the **dune** build system and a **language server** to integrate with popular editors such as Visual Studio Code. 
+- The **utop** command-line interface is a modern interactive tool that supports command history, macro expansion, module completion, and other niceties that make it much more pleasant to work with the language. utop is an easier-to-use version of OCaml'92s standard toplevel (which you can start by typing ocaml at the command line).
 
-Base is designed to be lightweight, portable, and stable, while providing all of the fundamentals you need from a standard library. It comes with a minimum of external dependencies, so Base just takes seconds to build and install.
-
-Core extends Base in a number of ways: it adds new data structures, like heaps, hash-sets, and functional queues; it provides types to represent times and time-zones; well-integrated support for efficient binary serializers; and much more. At the same time, it has many more dependencies, and so takes longer to build, and will add more to the size of your executables.
-
-### OCaml Platform (opam, dune, lnaguage server protocol and utop)
-
-The installation and management of these third-party libraries is made much easier via a package management tool known as opam, which is the basis of the OCaml Platform. Constituent tools of the OCaml Platform include the dune build system and a language server to integrate with popular editors such as Visual Studio Code. The utop command-line interface is a modern interactive tool that supports command history, macro expansion, module completion, and other niceties that make it much more pleasant to work with the language. utop is an easier-to-use version of OCaml'92s standard toplevel (which you can start by typing ocaml at the command line).
-
-### Installation
-
-[http://dev.realworldocaml.org/install.html]
+### [Installation](http://dev.realworldocaml.org/install.html) (opan init, opam switch, eval$(opam env), opam instal ...)
 
 Initialize the opam package database by running:
-
+```
 $ opam init
-
+```
 opam init will ask you if you want it to adjust some of the config files for your shell. We recommend you say yes here so as to automate adjusting the PATH environment variable of your shell and to prepare your environment in other ways. Note that this will only take effect on a newly launched shell.
 
 You can check if your environment is set up properly by running
 
-$ opam switch with no arguments.
+$ opam switch
 
 It will emit a warning if your shell is not set up correctly. We can use opan to install other versions:
 
@@ -54,9 +50,11 @@ Set up your Visual Studio Code with the OCaml Platform plug-in. You'll also need
 ## Part I - Language Concepts (core language, modules, functors and objects)
 
 ### Chapter 4 - Files, Modules and Programs
+
 For real-world programs, you’ll need to leave the toplevel behind and start building programs from files. Files are more than just a convenient way to store and manage your code; in OCaml, they also correspond to modules, which act as boundaries that divide your program into conceptual units. Mostly, the declaration starting with let () = plays the role of the main function, kicking off the processing.
 
 #### Single-file programs
+
 Unlike programs in C, Java or C#, programs in OCaml don’t have a unique main function. When an OCaml program is evaluated, all the statements in the implementation files are evaluated in the order in which they were linked together.
 
 For a filename.ml program, if we weren’t using Base or any other external libraries, we could build the executable like this:
@@ -70,6 +68,7 @@ $ ocamlfind ocamlopt -linkpkg -package base -package stdio filename.ml -o filena
 This uses ocamlfind, a tool which itself invokes other parts of the OCaml toolchain (in this case, ocamlopt) with the appropriate flags to link in particular libraries and packages. Here, -package base is asking ocamlfind to link in the Base library; -linkpkg asks ocamlfind to link in the packages as is necessary for building an executable. (the above command creates filename filename.cmi filename.cmx and freq.o.)
 
 #### Dune Files
+
 While this works well enough for a one-file project, more complicated projects require a tool to orchestrate the build. One good tool for this task is dune. To invoke dune, you need to have two files: a dune-project file for the overall project, and a dune file that configures the particular directory. This is a single-directory project, so we’ll just have one of each, but more realistic projects will have one dune-project and many dune files.
 
 At its simplest, the dune-project just specifies the version of the dune configuration-language in use:
@@ -99,6 +98,7 @@ $ grep -Eo '[[:alpha:]]+' freq.ml | dune exec ./freq.exe
 More info on grep: [https://www.freecodecamp.org/news/grep-command-in-linux-usage-options-and-syntax-examples/]
 
 #### Multiple files and modules
+
 Source files in OCaml are tied into the module system, with each file compiling down into a module whose name is derived from the name of the file.
 
 For example  we can factor out the key functionality of freq.ml into a separate module with an explicit interface. We’ll start by creating a file, counter.ml, that contains the logic for maintaining the association list used to represent the frequency counts. The file counter.ml will be compiled into a module named Counter, where the name of the module is derived automatically from the filename. The module name is capitalized even if the file is not.
@@ -110,9 +110,11 @@ $ dune build freq.exe
 ## Part II - useful tools and techniques for addressing common practical applications, from command-line parsing to asynchronous network programming
 
 ### Chapter 21 - The OCaml Platform
+
 The OCaml community has developed a suite of modern tools to interface it with IDEs such as Visual Studio Code, and to generate API documentation and implement modern software engineering practices such as continuous integration (CI) and unit or fuzz testing. All you need to do is to specify your project metadata (for example, library dependencies and compiler versions), and the OCaml Platform tools that we’ll describe next will do much of the heavy lifting.
 
 #### How to use opam within a full project
+
 https://opam.ocaml.org/doc/Usage.html
 
 First, initialize opam’s global state. An existing opam root is required for opam to operate normally, and one is created upon running opam init.
@@ -131,8 +133,8 @@ opam is designed to hold any number of concurrent installation prefixes, called 
 
 $ eval $(opam env)
 
-
 #### a sample OCaml project
+
 Dune has a basic built-in command to initialize a project template. Dune will create a hello/ directory and populate it with a skeleton OCaml project. (Make sure the directory does not contain any space characters.)
 
 $ dune init proj hello
@@ -168,8 +170,8 @@ $ opam switch create . 4.13.1
 On the other hand, if you didn’t have that system compiler installed, then the compiler will need to be built from scratch. The command above would select the ocaml-base-compiler package in this case, which contains the full OCaml compiler source code. It will take a little longer than ocaml-system, but you have much more flexibility about the choice of versions.
 
 #### Structure of an OCaml Project
-```
 
+```
 .
 |-- dune-project
 |-- hello.opam
@@ -182,7 +184,6 @@ On the other hand, if you didn’t have that system compiler installed, then the
     |-- dune
     `-- hello.ml
 ```
-
 
 Apart from _opam and _build directory we have the above folder structure in  our hello project:
 - The dune-project file marks the root of the project, and is used for writing down some key metadata for the project (more on that later).
