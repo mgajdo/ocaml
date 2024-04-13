@@ -19,20 +19,20 @@
 ### [Installation](http://dev.realworldocaml.org/install.html) (opan init, opam switch, eval$(opam env), opam instal ...)
 
 Initialize the opam package database by running:
-
-`$ opam init`
-
+```
+$ opam init
+```
 opam init will ask you if you want it to adjust some of the config files for your shell. We recommend you say yes here so as to automate adjusting the PATH environment variable of your shell and to prepare your environment in other ways. Note that this will only take effect on a newly launched shell.
 
 You can check if your environment is set up properly by running
-
-`$ opam switch`
-
+```
+$ opam switch
+```
 It will emit a warning if your shell is not set up correctly. We can use opan to install other versions:
-
-`$ opam switch create 4.13.1`
-`$ eval $(opam env)`
-
+```
+$ opam switch create 4.13.1
+$ eval $(opam env)
+```
 The opam switch create will take a few minutes on a modern machine, and will download and install the new compiler and all libraries associated with it. The second line is required to point your current shell to the new switch.
 
 You'll need to install base and core, which provide the standard library that all the examples in the book are based on, along with utop, which is the interactive toplevel that you can use for working through the examples.
