@@ -3,27 +3,27 @@
 readings/
 
 # ttps://github.com/github/gitignore/blob/main/OCaml.gitignore
-*.annot
-*.cmo
-*.cma
-*.cmi
-*.a
-*.o
-*.cmx
-*.cmxs
-*.cmxa
+# *.annot
+# *.cmo
+# *.cma
+# *.cmi
+# *.a
+# *.o
+# *.cmx
+# *.cmxs
+# *.cmxa
 
 # ocamlbuild working directory
-_build/
+# _build/
 
 # Local OPAM switch
-_opam/
+# _opam/
 
 # ocamlbuild targets
-*.byte
-*.native
+# *.byte
+# *.native
 
 # Dune generated files
-*.install
+# *.install
 
 
