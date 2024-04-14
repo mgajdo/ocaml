@@ -648,6 +648,8 @@ $ opam user-setup install
 $ opam install catala
 ```
 
-
 ## Project
-[x] Add .gitignore file: available at https://github.com/github/gitignore/blob/main/OCaml.gitignore
+
+[x] Add .gitignore file: available at https://github.com/github/gitignore/blob/main/OCaml.gitignore. See https://www.freecodecamp.org/news/gitignore-file-how-to-ignore-files-and-folders-in-git/ for more information
+[ ] Create separate catala repository (fork)
+[ ] Create .env file

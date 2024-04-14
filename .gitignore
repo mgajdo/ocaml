@@ -1,3 +1,8 @@
+# Ignore system file and readings folder
+.DS_Store
+readings/
+
+# ttps://github.com/github/gitignore/blob/main/OCaml.gitignore
 *.annot
 *.cmo
 *.cma
